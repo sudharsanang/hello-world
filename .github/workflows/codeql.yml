@@ -1,4 +1,4 @@
-name: "CodeQL Advanced"
+name: "CodeQL Java Security Scan"
 
 on:
   push:
@@ -7,45 +7,30 @@ on:
 
 jobs:
   analyze:
-    name: Analyze (${{ matrix.language }})
-    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
+    name: Analyze Java
+    runs-on: ubuntu-latest
     permissions:
       security-events: write
       packages: read
       actions: read
       contents: read
 
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - language: java-kotlin
-            build-mode: manual
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up JDK 17
-        if: matrix.language == 'java-kotlin'
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
-      # Initializes CodeQL — IMPORTANT — comes BEFORE build
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
         with:
-          languages: ${{ matrix.language }}
-          build-mode: ${{ matrix.build-mode }}
-
-      # Manual build happens AFTER CodeQL init
-      - name: Build (Maven)
-        if: matrix.language == 'java-kotlin'
-        run: mvn -B package --file server/pom.xml
+          languages: java
+          build-command: mvn -B package --file server/pom.xml
+          config-file: codeql/java/ql/src/codeql-suites/java-security-extended.qls
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v4
-        with:
-          category: "/language:${{ matrix.language }}"
