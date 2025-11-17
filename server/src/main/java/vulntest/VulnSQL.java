@@ -22,12 +22,23 @@ public class VulnSQL {
         while (rs.next()) {
             System.out.println(rs.getString("username"));
         }
+
+        // Also call your method here:
+        VulnSQL v = new VulnSQL();
+        v.vulnerableQuery("test");
     }
 
-    public static void main(String[] args) throws Exception {
-    VulnSQL v = new VulnSQL();
-    v.vulnerableQuery("test");
-}
+    public void vulnerableQuery(String input) throws Exception {
+        System.out.println("Running vulnerableQuery with: " + input);
 
-}
+        String query = "SELECT * FROM users WHERE username = '" + input + "'";
 
+        Connection conn = DriverManager.getConnection("jdbc:h2:mem:test");
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(query);
+
+        while (rs.next()) {
+            System.out.println(rs.getString("username"));
+        }
+    }
+}
