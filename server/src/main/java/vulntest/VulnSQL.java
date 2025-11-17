@@ -23,9 +23,11 @@ public class VulnSQL {
             System.out.println(rs.getString("username"));
         }
     }
-}
-public static void main(String[] args) throws Exception {
+
+    public static void main(String[] args) throws Exception {
     VulnSQL v = new VulnSQL();
     v.vulnerableQuery("test");
+}
+
 }
 
