@@ -4,17 +4,13 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import javax.servlet.http.HttpServletRequest;
 
 public class VulnSQL {
 
-    public void vulnerableQuery(HttpServletRequest request) throws Exception {
-
-        // Get user input
-        String username = request.getParameter("user");
+    public void vulnerableQuery(String username) throws Exception {
 
         // Intentional vulnerability: unparameterized SQL
-        // This WILL be caught by CodeQL (java/sql-injection)
+        // CodeQL WILL flag this as a SQL Injection
         String query = "SELECT * FROM users WHERE username = '" + username + "'";
 
         // Vulnerable execution
