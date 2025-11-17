@@ -1,44 +1,16 @@
 package vulntest;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 
 public class VulnSQL {
 
     public static void main(String[] args) throws Exception {
 
-        // CodeQL considers args[] untrusted == TAINT SOURCE
-        String username = args.length > 0 ? args[0] : "' OR '1'='1";
+        String username = args[0]; // untrusted
 
-        // SQL injection vulnerability
-        String query = "SELECT * FROM users WHERE username = '" + username + "'";
+        String query = "SELECT * FROM users WHERE username = '" + username + "'"; // SQL injection
 
-        Connection conn = DriverManager.getConnection("jdbc:h2:mem:test");
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery(query);
-
-        while (rs.next()) {
-            System.out.println(rs.getString("username"));
-        }
-
-        // Also call your method here:
-        VulnSQL v = new VulnSQL();
-        v.vulnerableQuery("test");
-    }
-
-    public void vulnerableQuery(String input) throws Exception {
-        System.out.println("Running vulnerableQuery with: " + input);
-
-        String query = "SELECT * FROM users WHERE username = '" + input + "'";
-
-        Connection conn = DriverManager.getConnection("jdbc:h2:mem:test");
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery(query);
-
-        while (rs.next()) {
-            System.out.println(rs.getString("username"));
-        }
+        Connection con = DriverManager.getConnection("jdbc:mysql://localhost/test", "root", "pass");
+        Statement st = con.createStatement();
+        st.executeQuery(query);
     }
 }
