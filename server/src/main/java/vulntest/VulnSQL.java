@@ -2,15 +2,22 @@ package vulntest;
 import java.sql.*;
 
 public class VulnSQL {
+    public static void main(String[] args) {
+        String username = args[0]; // taint source
 
-    public static void main(String[] args) throws Exception {
+        try {
+            Connection conn = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/test", "root", "password"
+            );
 
-        String username = args[0]; // untrusted
+            Statement stmt = conn.createStatement();
 
-        String query = "SELECT * FROM users WHERE username = '" + username + "'"; // SQL injection
-
-        Connection con = DriverManager.getConnection("jdbc:mysql://localhost/test", "root", "pass");
-        Statement st = con.createStatement();
-        st.executeQuery(query);
+            // inline taint → concatenation → SQL sink
+            ResultSet rs = stmt.executeQuery(
+                "SELECT * FROM users WHERE username = '" + username + "'"
+            );
+        } catch (Exception e) {
+            // ignore
+        }
     }
 }
