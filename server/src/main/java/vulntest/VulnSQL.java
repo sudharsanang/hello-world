@@ -24,3 +24,8 @@ public class VulnSQL {
         }
     }
 }
+public static void main(String[] args) throws Exception {
+    VulnSQL v = new VulnSQL();
+    v.vulnerableQuery("test");
+}
+
