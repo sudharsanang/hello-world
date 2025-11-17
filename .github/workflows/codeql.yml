@@ -46,7 +46,7 @@ jobs:
       # Manual build happens AFTER CodeQL init
       - name: Build (Maven)
         if: matrix.language == 'java-kotlin'
-        run: mvn -B -DskipTests package
+        run: mvn -B -DskipTests package --file server/pom.xml
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v4
