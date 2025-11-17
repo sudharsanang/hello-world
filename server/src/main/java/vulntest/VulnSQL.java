@@ -9,10 +9,10 @@ public class VulnSQL {
 
     public static void main(String[] args) throws Exception {
 
-        // Tainted source: CodeQL recognizes environment variables as untrusted
-        String username = System.getenv("USER_INPUT");
+        // CodeQL considers args[] untrusted == TAINT SOURCE
+        String username = args.length > 0 ? args[0] : "' OR '1'='1";
 
-        // Intentional SQL Injection vulnerability
+        // SQL injection vulnerability
         String query = "SELECT * FROM users WHERE username = '" + username + "'";
 
         Connection conn = DriverManager.getConnection("jdbc:h2:mem:test");
